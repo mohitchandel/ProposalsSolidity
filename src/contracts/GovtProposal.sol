@@ -3,20 +3,31 @@ pragma solidity ^0.8.4;
 
 contract GovtProposal {
 
-    struct Proposal {
+    // Proposal struct
+    struct Proposals {
         string name;
         uint votes;
     }
-    Proposal private proposal;
+    Proposals private proposals;
 
+    // Voters struct
+    struct Voters {
+        string name;
+        address id;
+        bool voted;
+    }
+    voters private Voters;
+
+    // Making Proposal
     function makeProposal(string memory _name) private{
-        proposal = Proposal(_name, 0);
+        proposals = Proposals(_name, 0);
     }
 
+    // Voting for proposal
     function voteProposal() private{
     }
 
+    // Getting Proposal
     function getProposal() private{
-
     }
 }
