@@ -14,6 +14,9 @@ contract GovtProposal {
     }
 
     function voteProposal() private{
+    }
+
+    function getProposal() private{
 
     }
 }
