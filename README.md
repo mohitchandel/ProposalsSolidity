@@ -16,7 +16,7 @@ Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 For Truffle :-
-use these commands after making any change with .sol file
+use these commands after making any change on .sol file
 
 ### `truffle compile`
 
