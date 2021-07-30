@@ -3,12 +3,13 @@ import './App.css';
 import Web3 from 'web3';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import GovtProposal from "./artifacts/GovtProposal.json";
-import { Col, Container, Dropdown, Form, Row, Table, FloatingLabel } from 'react-bootstrap';
+import { Col, Container, Dropdown, Form, Row, Table, FloatingLabel, Button} from 'react-bootstrap';
 
 function App() {
 
   const [voter, setVoter] = useState();
   const [prname, setPrname] = useState();
+  const [procount, setProcount] = useState();
 
   async function setGovtProposal(){
     const web3 = new Web3(Web3.givenProvider)
@@ -17,9 +18,16 @@ function App() {
     const contract = new web3.eth.Contract(GovtProposal.abi, contractNetwork.address);
     const address = await web3.eth.getAccounts()
     setVoter(address[0]);
-    // await contract.methods.submiProposal(prname).send({from : address[0]})
-    // const result = await contract.methods.proposals(2).call()
-    // console.log(result)
+    await contract.methods.submiProposal(prname).send({from : address[0]})
+    const propcount = await contract.methods.getproposalsCount().call()
+    setProcount(propcount)
+
+    for(var i = 1; i <= propcount; i++){
+      const result = await contract.methods.proposals(i).call()
+      console.log(result)
+    }
+    
+    // console.log(propcount)
   }
 
 
@@ -59,7 +67,7 @@ function App() {
                 >
                 <Form.Control onChange={e => setPrname(e.target.value)} type="text" placeholder="Proposal Name" />
               </FloatingLabel>
-              <button onClick={setGovtProposal}>Add Proposal</button>
+              <Button onClick={setGovtProposal}>Add Proposal</Button>
           </Col>
         </Row>
         <Row className="d-flex justify-content-center mt-5">
