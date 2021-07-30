@@ -3,31 +3,34 @@ pragma solidity ^0.8.4;
 
 contract GovtProposal {
 
-    // Proposal struct
-    struct Proposals {
+    mapping(address => bool ) voter;
+    
+    uint private votes;
+     
+    struct Proposals{
+        uint id;
         string name;
         uint votes;
     }
-    Proposals private proposals;
-
-    // Voters struct
-    struct Voters {
-        string name;
-        address id;
-        bool voted;
+    mapping (uint => Proposals) public proposals;
+    
+    uint internal proposalsCount;
+    
+    function submiProposal(string memory _name) public{
+        addProposal(_name);
     }
-    voters private Voters;
-
-    // Making Proposal
-    function makeProposal(string memory _name) private{
-        proposals = Proposals(_name, 0);
+    
+    function addProposal(string memory _name) private{
+        proposalsCount ++;
+        proposals[proposalsCount] = Proposals(proposalsCount,_name, 0);
+    }
+    
+    function voteProposal(uint _proposalId) public{
+        require(!voter[msg.sender]);
+        require(_proposalId > 0 && _proposalId <= proposalsCount);
+        
+        voter[msg.sender] = true;
+        proposals[_proposalId].votes ++;
     }
 
-    // Voting for proposal
-    function voteProposal() private{
-    }
-
-    // Getting Proposal
-    function getProposal() private{
-    }
 }
