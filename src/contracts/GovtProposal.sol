@@ -14,7 +14,11 @@ contract GovtProposal {
     }
     mapping (uint => Proposals) public proposals;
     
-    uint internal proposalsCount;
+    uint public proposalsCount;
+    
+    function getproposalsCount() public view returns(uint){
+        return proposalsCount;
+    }
     
     function submiProposal(string memory _name) public{
         addProposal(_name);
@@ -28,7 +32,7 @@ contract GovtProposal {
     function voteProposal(uint _proposalId) public{
         require(!voter[msg.sender]);
         require(_proposalId > 0 && _proposalId <= proposalsCount);
-        
+
         voter[msg.sender] = true;
         proposals[_proposalId].votes ++;
     }
