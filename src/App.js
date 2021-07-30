@@ -10,24 +10,28 @@ function App() {
   const [voter, setVoter] = useState();
   const [prname, setPrname] = useState();
   const [procount, setProcount] = useState();
-
-  async function setGovtProposal(){
+  const [proarray, setProarray] = useState([]);
+  
+  
+  const setGovtProposal = async() => {
     const web3 = new Web3(Web3.givenProvider)
     const contractId = await web3.eth.net.getId()
     const contractNetwork = GovtProposal.networks[contractId]
     const contract = new web3.eth.Contract(GovtProposal.abi, contractNetwork.address);
     const address = await web3.eth.getAccounts()
     setVoter(address[0]);
-    await contract.methods.submiProposal(prname).send({from : address[0]})
+    // await contract.methods.submiProposal(prname).send({from : address[0]})
     const propcount = await contract.methods.getproposalsCount().call()
     setProcount(propcount)
-
-    for(var i = 1; i <= propcount; i++){
-      const result = await contract.methods.proposals(i).call()
-      console.log(result)
-    }
     
-    // console.log(propcount)
+    var arr = [];
+    for(var i = 1; i <= propcount; i++){
+        let result = await contract.methods.proposals(i).call(function(err,res){
+        arr.push({ res })
+        setProarray(arr)
+      })
+    }
+    console.log(proarray);
   }
 
 
