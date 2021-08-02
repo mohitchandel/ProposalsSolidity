@@ -28,6 +28,11 @@ contract GovtProposal {
         proposalsCount ++;
         proposals[proposalsCount] = Proposals(proposalsCount,_name, 0);
     }
+
+    function deleteProposal(uint _id) public{
+        delete proposals[_id];
+        proposalsCount-1;
+    }
     
     function voteProposal(uint _proposalId) public{
         require(!voter[msg.sender]);
