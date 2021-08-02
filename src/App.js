@@ -41,14 +41,25 @@ function App() {
       })
     }
   }
+
+  const delGovtProposal = async(id) => {
+    const web3 = new Web3(Web3.givenProvider)
+    const contractId = await web3.eth.net.getId()
+    const contractNetwork = GovtProposal.networks[contractId]
+    const contract = new web3.eth.Contract(GovtProposal.abi, contractNetwork.address);
+    const address = await web3.eth.getAccounts()
+    setVoter(address[0]);
+    await contract.methods.deleteProposal(id).send({from : address[0]})
+    const propcount = await contract.methods.getproposalsCount().call()
+    setProcount(propcount)
+    for(var i = 0; i < 2; i++){
+      (async () => {
+        getGovtProposal();
+      })()
+    }
+  }
   
-  const promp = proarr.map((proarr, index) => (
-    <tr key={index + 1}>
-      <th >{proarr.res.id}</th>
-      <th >{proarr.res.name}</th>
-      <th >{proarr.res.votes}</th>
-    </tr>
-  ))
+  
   
   const setGovtProposal = async() => {
     const web3 = new Web3(Web3.givenProvider)
@@ -85,7 +96,14 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {promp}
+                {proarr.map((proarr, index) => (
+                  <tr key={index + 1}>
+                    <th >{proarr.res.id}</th>
+                    <th >{proarr.res.name}</th>
+                    <th >{proarr.res.votes}</th>
+                    <th ><Button onClick={() => delGovtProposal(proarr.res.id)}>Del</Button></th>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </Col>
