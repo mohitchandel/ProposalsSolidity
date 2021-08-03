@@ -19,7 +19,7 @@ function App() {
   const [prname, setPrname] = useState();
   const [procount, setProcount] = useState();
   const [proarr, setProarr] = useState([]);
-  // const [promap, setPromap] = useState();
+  const [disable, setDisable] = useState(false);
   
   
   const getGovtProposal = async() => {
@@ -41,24 +41,6 @@ function App() {
       })
     }
   }
-
-  const delGovtProposal = async(id) => {
-    const web3 = new Web3(Web3.givenProvider)
-    const contractId = await web3.eth.net.getId()
-    const contractNetwork = GovtProposal.networks[contractId]
-    const contract = new web3.eth.Contract(GovtProposal.abi, contractNetwork.address);
-    const address = await web3.eth.getAccounts()
-    setVoter(address[0]);
-    await contract.methods.deleteProposal(id).send({from : address[0]})
-    const propcount = await contract.methods.getproposalsCount().call()
-    setProcount(propcount)
-    for(var i = 0; i < 2; i++){
-      (async () => {
-        getGovtProposal();
-      })()
-    }
-  }
-  
   
   
   const setGovtProposal = async() => {
@@ -76,6 +58,22 @@ function App() {
         getGovtProposal();
       })()
     }
+  }
+
+  const voteGovtProposal = async(id) => {
+    const web3 = new Web3(Web3.givenProvider)
+    const contractId = await web3.eth.net.getId()
+    const contractNetwork = GovtProposal.networks[contractId]
+    const contract = new web3.eth.Contract(GovtProposal.abi, contractNetwork.address);
+    const address = await web3.eth.getAccounts()
+    setVoter(address[0]);
+    await contract.methods.voteProposal(id).send({from : address[0]})
+    for(var i = 0; i < 2; i++){
+      (async () => {
+        getGovtProposal();
+      })()
+    }
+    setDisable(true)
   }
 
 
@@ -101,7 +99,7 @@ function App() {
                     <th >{proarr.res.id}</th>
                     <th >{proarr.res.name}</th>
                     <th >{proarr.res.votes}</th>
-                    <th ><Button onClick={() => delGovtProposal(proarr.res.id)}>Del</Button></th>
+                    <th ><Button disabled={disable} onClick={() => voteGovtProposal(proarr.res.id)}>Vote</Button></th>
                   </tr>
                 ))}
               </tbody>
@@ -119,21 +117,6 @@ function App() {
                 <Form.Control onChange={e => setPrname(e.target.value)} type="text" placeholder="Proposal Name" />
               </FloatingLabel>
               <Button onClick={setGovtProposal}>Add Proposal</Button>
-          </Col>
-        </Row>
-        <Row className="d-flex justify-content-center mt-5">
-          <Col md={6} className="text-center">
-            <h5>Vote For Proposal</h5>
-            <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Proposals
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
           </Col>
         </Row>
         <Row className="d-flex justify-content-center mt-5">
